@@ -1,3 +1,11 @@
+# Frontend
 node_modules/
 dist/
 .DS_Store
+
+# Backend
+backend/target/
+*.db
+*.db-journal
+.idea/
+*.iml

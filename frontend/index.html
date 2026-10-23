@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f8f4" />
+    <title>Calorie Counter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      try {
+        var t = localStorage.getItem('cc-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#/overview">Calorie Counter</a>
+        <p class="nav-label">Workspace</p>
+        <nav class="nav" aria-label="Main">
+          <a href="#/overview" data-route="overview">
+            <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+            Overview
+          </a>
+          <a href="#/log" data-route="log">
+            <svg viewBox="0 0 24 24"><path d="M5 3v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V3M7 3v18M17 3c-1.7 0-3 2.2-3 5s1.3 4 3 4v9M17 3v18"/></svg>
+            Food log
+          </a>
+          <a href="#/progress" data-route="progress">
+            <svg viewBox="0 0 24 24"><path d="M4 4v16h16M8 16v-4M12 16V8M16 16v-6"/></svg>
+            Progress
+          </a>
+          <a href="#/foods" data-route="foods">
+            <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="2.5"/><path d="M4.5 5.5v13c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5v-13M4.5 12c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5"/></svg>
+            Food database
+          </a>
+          <a href="#/profile" data-route="profile">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5c1.3-2 3.2-3 5.5-3s4.2 1 5.5 3"/></svg>
+            Profile &amp; goals
+          </a>
+          <a href="#/settings" data-route="settings">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+            Settings
+          </a>
+        </nav>
+      </aside>
+      <div class="scrim" id="scrim" hidden></div>
+
+      <div class="main">
+        <header class="topbar">
+          <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <nav class="crumbs" aria-label="Breadcrumb">
+            <span>Workspace</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+            <span id="crumb" class="crumb-current">Overview</span>
+          </nav>
+          <div class="topbar-actions">
+            <button class="icon-btn" id="search-btn" type="button" aria-label="Search foods">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            </button>
+            <button class="btn primary" type="button" data-open-add>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Add food</span>
+            </button>
+            <a class="avatar" id="avatar" href="#/profile" aria-label="Profile">?</a>
+          </div>
+        </header>
+
+        <main id="view" class="view" tabindex="-1"></main>
+      </div>
+    </div>
+
+    <!-- Add / edit food dialog -->
+    <dialog id="entry-dialog" class="dialog" aria-labelledby="entry-title">
+      <form id="entry-form" class="dialog-body" novalidate>
+        <div class="dialog-head">
+          <h2 id="entry-title">Add food</h2>
+          <button type="button" class="icon-btn" data-close aria-label="Close">
+            <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+
+        <div class="segmented" role="tablist" aria-label="Food source">
+          <button type="button" role="tab" data-tab="db" aria-selected="true">From database</button>
+          <button type="button" role="tab" data-tab="custom" aria-selected="false">Custom food</button>
+        </div>
+
+        <div data-panel="db">
+          <label class="field">
+            <span>Find a food</span>
+            <input type="search" id="dlg-search" placeholder="Search foods, like paneer or rice" autocomplete="off" />
+          </label>
+          <ul class="pick-list" id="dlg-results" role="listbox" aria-label="Foods"></ul>
+          <div class="picked" id="dlg-picked" hidden></div>
+        </div>
+
+        <div data-panel="custom" hidden>
+          <label class="field">
+            <span>Food name</span>
+            <input type="text" id="dlg-name" maxlength="100" placeholder="e.g. Homemade khichdi" />
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span>Serving</span>
+              <input type="text" id="dlg-serving" maxlength="50" placeholder="1 bowl" />
+            </label>
+            <label class="field">
+              <span>Calories per serving</span>
+              <input type="number" id="dlg-calories" min="0" max="5000" inputmode="numeric" placeholder="0" />
+            </label>
+          </div>
+          <div class="field-row three">
+            <label class="field"><span>Protein (g)</span><input type="number" id="dlg-protein" min="0" step="0.1" placeholder="0" /></label>
+            <label class="field"><span>Carbs (g)</span><input type="number" id="dlg-carbs" min="0" step="0.1" placeholder="0" /></label>
+            <label class="field"><span>Fat (g)</span><input type="number" id="dlg-fat" min="0" step="0.1" placeholder="0" /></label>
+          </div>
+          <div class="save-to-db" id="dlg-save-row">
+            <label class="check">
+              <input type="checkbox" id="dlg-save-db" />
+              <span>Also save to the food database</span>
+            </label>
+            <select id="dlg-category" aria-label="Category">
+              <option value="indian">Indian Food</option>
+              <option value="fruits">Fruits</option>
+              <option value="vegetables">Vegetables</option>
+              <option value="grains">Grains</option>
+              <option value="dairy">Dairy</option>
+              <option value="meat">Meat</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row three">
+          <label class="field">
+            <span>Meal</span>
+            <select id="dlg-meal">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Snack</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Servings</span>
+            <input type="number" id="dlg-qty" min="0.1" max="50" step="0.5" value="1" inputmode="decimal" />
+          </label>
+          <label class="field">
+            <span>Time</span>
+            <input type="time" id="dlg-time" />
+          </label>
+        </div>
+
+        <p class="dlg-total" id="dlg-total"></p>
+        <p class="form-error" id="dlg-error" role="alert"></p>
+
+        <div class="dialog-actions">
+          <button type="button" class="btn ghost" data-close>Cancel</button>
+          <button type="submit" class="btn primary" id="dlg-submit">Add to log</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
